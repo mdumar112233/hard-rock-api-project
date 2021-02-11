@@ -1,14 +1,15 @@
-const searchSong = () => {
+const searchSong = async() => {
     const searchText = document.getElementById('search-input').value;
     const url =`https://api.lyrics.ovh/suggest/${searchText}`;
-    fetch(url)
-    .then(res => res.json())
-    .then(data => displaySong(data.data))
+    const res = await fetch(url);
+    const data = await res.json();
+    displaySong(data.data);
 }
 
 const displaySong = songs => {
     // console.log(songs);
     const songContainer = document.getElementById('song-container');
+    songContainer.innerHTML = '';
     songs.forEach(song => {
         const songDiv = document.createElement('div');
         songDiv.className = '"search-result col-md-8 mx-auto py-4';
@@ -30,19 +31,36 @@ const displaySong = songs => {
     })
 }
 
-
-const getLyric = (artist, title) =>{
-    const url = ` https://api.lyrics.ovh/v1/${artist}/${title}`;
-    fetch(url)
-    .then(res => res.json())
-    .then(data => displayLyric(data.lyrics))
+//// git data from api with async mehtod 
+const getLyric = async (artist, title) =>{
+    try{
+        const url = ` https://ap.lyrics.ovh/v1/${artist}/${title}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        displayLyric(data.lyrics);  
+    }
+    catch(error){
+        console.log(error);
+    }
 }
+
+// const getLyric = (artist, title) =>{
+//     const url = ` https://api.lyrics.ovh/v1/${artist}/${title}`;
+//     fetch(url)
+//     .then(res => res.json())
+//     .then(data => displayLyric(data.lyrics))
+//     .catch(error => displayError(`something want to wrong please try to catch`))
+// }
 
 
 const displayLyric = lyric => {
     const lyricDiv = document.getElementById('song-lyric');
     lyricDiv.innerText = lyric;
-    console.log(lyricDiv.innerText);
+}
+
+const displayError = error => {
+    const apiError = document.getElementById('error-message');
+    apiError.innerText = error;
 }
 
 
